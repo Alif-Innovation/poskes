@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * Smart Health Hub — Design Tokens
+ * Single source of truth for the color palette described in PRD §4.
+ * Consumed by tailwind.config.ts via var(--color-*), and directly usable
+ * in contexts Tailwind can't reach (print templates, chart libraries, inline SVG).
+ */
+:root {
+  --color-brand-primary: #0284c7; /* Sky Blue 600 */
+  --color-brand-primary-hover: #0369a1; /* Sky Blue 700 */
+  --color-brand-secondary: #0f172a; /* Slate 900 */
+
+  --color-state-success: #16a34a; /* Green 600 */
+  --color-state-warning: #ca8a04; /* Yellow 600 */
+  --color-state-danger: #dc2626; /* Red 600 */
+
+  --color-bg-main: #f8fafc; /* Slate 50 */
+  --color-bg-surface: #ffffff;
+  --color-border: #e2e8f0; /* Slate 200 */
+
+  --sidebar-width: 256px;
+  --radius-card: 8px;
+  --shadow-card: 0 1px 2px 0 rgb(15 23 42 / 0.06);
+}
+
+@layer base {
+  html {
+    font-family: 'Inter', Arial, ui-sans-serif, system-ui, sans-serif;
+  }
+
+  body {
+    @apply bg-bg-main text-slate-800 antialiased;
+  }
+}
+
+@layer components {
+  /* Clean Medical UI card: PRD §4 — border 1px solid #e2e8f0, rounded-lg, shadow-sm */
+  .shh-card {
+    @apply rounded-lg border border-border bg-bg-surface shadow-sm;
+  }
+
+  /* Compact table density per PRD §4 Data Density rule */
+  .shh-table th {
+    @apply px-4 py-2 text-left text-xs font-semibold uppercase tracking-wide text-slate-500;
+  }
+  .shh-table td {
+    @apply px-4 py-2 text-sm text-slate-700;
+  }
+
+  .shh-label {
+    @apply mb-1 block text-sm font-medium text-slate-700;
+  }
+
+  .shh-error-text {
+    @apply mt-1 text-xs font-medium text-state-danger;
+  }
+}
