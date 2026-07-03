@@ -7,15 +7,11 @@ import { Button } from '@/components/Button'
 import { useDebounce } from '@/hooks/useDebounce'
 import { PasienFormModal } from '../components/PasienFormModal'
 import { AllergyBadge } from '../components/AllergyBadge'
+import { usePasienDirectory } from '../hooks/usePasienDirectory'
 import type { PasienFormValues } from '../validation/pasienSchema'
 
-interface PasienRow extends PasienFormValues {
-  id: string
-  nomorRm: string
-}
-
 export function PasienListPage() {
-  const [pasienList, setPasienList] = useState<PasienRow[]>([])
+  const { pasienList, addPasien } = usePasienDirectory()
   const [search, setSearch] = useState('')
   const [modalOpen, setModalOpen] = useState(false)
   const debouncedSearch = useDebounce(search)
@@ -25,10 +21,7 @@ export function PasienListPage() {
   )
 
   const handleCreate = (values: PasienFormValues) => {
-    const nomorRm = `RM-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${String(
-      pasienList.length + 1,
-    ).padStart(4, '0')}`
-    setPasienList((prev) => [...prev, { ...values, id: crypto.randomUUID(), nomorRm }])
+    addPasien(values)
   }
 
   return (
