@@ -1,3 +1,6 @@
+import type { LucideIcon } from 'lucide-react'
+import { LayoutDashboard, Users, ClipboardList, PackageSearch, ListOrdered, Pill, BookMarked } from 'lucide-react'
+
 /** RBAC roles as defined in PRD §2 and the `users.role` enum (PRD §6.A). */
 export const ROLES = {
   SUPER_ADMIN: 'SUPER_ADMIN',
@@ -27,12 +30,12 @@ export type StatusAlur = (typeof STATUS_ALUR)[keyof typeof STATUS_ALUR]
 
 export const STOK_OPNAME_WARNING_MONTHS = 3
 
-export const NAV_ITEMS: Array<{ label: string; path: string; roles: Role[] }> = [
-  { label: 'Dashboard', path: '/dashboard', roles: [ROLES.SUPER_ADMIN, ROLES.REGISTRASI, ROLES.TENAGA_MEDIS, ROLES.FARMASI] },
-  { label: 'Data Pasien', path: '/pasien', roles: [ROLES.SUPER_ADMIN, ROLES.REGISTRASI, ROLES.TENAGA_MEDIS] },
-  { label: 'Pemeriksaan SOAP', path: '/rekam-medis/soap', roles: [ROLES.SUPER_ADMIN, ROLES.TENAGA_MEDIS] },
-  { label: 'Stok Obat', path: '/farmasi/stok', roles: [ROLES.SUPER_ADMIN, ROLES.FARMASI] },
-  { label: 'Antrean Resep', path: '/farmasi/resep', roles: [ROLES.SUPER_ADMIN, ROLES.FARMASI] },
-  { label: 'Master Obat', path: '/master-data/obat', roles: [ROLES.SUPER_ADMIN, ROLES.FARMASI] },
-  { label: 'Master Diagnosis', path: '/master-data/diagnosis', roles: [ROLES.SUPER_ADMIN, ROLES.TENAGA_MEDIS] },
+export const NAV_ITEMS: Array<{ label: string; path: string; icon: LucideIcon; roles: Role[] }> = [
+  { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard, roles: [ROLES.SUPER_ADMIN, ROLES.REGISTRASI, ROLES.TENAGA_MEDIS, ROLES.FARMASI] },
+  { label: 'Data Pasien', path: '/pasien', icon: Users, roles: [ROLES.SUPER_ADMIN, ROLES.REGISTRASI, ROLES.TENAGA_MEDIS] },
+  { label: 'Pemeriksaan SOAP', path: '/rekam-medis/soap', icon: ClipboardList, roles: [ROLES.SUPER_ADMIN, ROLES.TENAGA_MEDIS] },
+  { label: 'Stok Obat', path: '/farmasi/stok', icon: PackageSearch, roles: [ROLES.SUPER_ADMIN, ROLES.FARMASI] },
+  { label: 'Antrean Resep', path: '/farmasi/resep', icon: ListOrdered, roles: [ROLES.SUPER_ADMIN, ROLES.FARMASI] },
+  { label: 'Master Obat', path: '/master-data/obat', icon: Pill, roles: [ROLES.SUPER_ADMIN, ROLES.FARMASI] },
+  { label: 'Master Diagnosis', path: '/master-data/diagnosis', icon: BookMarked, roles: [ROLES.SUPER_ADMIN, ROLES.TENAGA_MEDIS] },
 ]

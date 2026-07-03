@@ -28,11 +28,12 @@ export function DashboardLayout() {
               to={item.path}
               className={({ isActive }) =>
                 clsx(
-                  'block rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+                  'flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
                   isActive ? 'bg-brand-primary text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white',
                 )
               }
             >
+              <item.icon className="h-4 w-4 shrink-0" />
               {item.label}
             </NavLink>
           ))}
