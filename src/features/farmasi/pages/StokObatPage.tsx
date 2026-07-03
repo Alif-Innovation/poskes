@@ -7,8 +7,9 @@ import { Button } from '@/components/Button'
 import { useNotification } from '@/context/NotificationContext'
 import { StockRow } from '../components/StockRow'
 import { stokFormSchema, type StokFormValues } from '../components/stokFormTypes'
+import { useObatDirectory } from '../hooks/useObatDirectory'
 
-const emptyRow = { obatId: 'obat-demo', batchNumber: '', stockQty: 0, expiredDate: '' }
+const emptyRow = { obatId: '', batchNumber: '', stockQty: 0, expiredDate: '' }
 
 /**
  * PRD §7 Form 3 (Manajemen Stok Masuk & Opname): dynamic inline-editable rows.
@@ -16,6 +17,7 @@ const emptyRow = { obatId: 'obat-demo', batchNumber: '', stockQty: 0, expiredDat
  */
 export function StokObatPage() {
   const { notify } = useNotification()
+  const { obatList, addBatches } = useObatDirectory()
   const {
     register,
     control,
@@ -33,6 +35,7 @@ export function StokObatPage() {
   const rows = watch('rows')
 
   const onSubmit = (values: StokFormValues) => {
+    addBatches(values.rows)
     notify('success', `${values.rows.length} baris stok berhasil disimpan`)
     reset({ rows: [emptyRow] })
   }
@@ -53,6 +56,7 @@ export function StokObatPage() {
             <Table>
               <TableHead>
                 <TableRow>
+                  <th>Nama Obat</th>
                   <th>Batch Number</th>
                   <th>Jumlah Stok</th>
                   <th>Expired Date</th>
@@ -66,6 +70,7 @@ export function StokObatPage() {
                     index={index}
                     register={register}
                     errors={errors}
+                    obatOptions={obatList}
                     expiredDate={rows?.[index]?.expiredDate ?? ''}
                     onRemove={() => remove(index)}
                   />

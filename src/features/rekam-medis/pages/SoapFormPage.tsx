@@ -15,17 +15,12 @@ import { usePasienDirectory } from '@/features/pasien/hooks/usePasienDirectory'
 import { PasienFormModal } from '@/features/pasien/components/PasienFormModal'
 import { classifyAllergy } from '@/features/pasien/validation/pasienSchema'
 import type { Pasien } from '@/features/pasien/types'
+import { useObatDirectory } from '@/features/farmasi/hooks/useObatDirectory'
 import { createSoapSchema, type SoapFormValues } from '../validation/soapSchema'
-import { ResepRow, type ObatOption } from '../components/ResepRow'
+import { ResepRow } from '../components/ResepRow'
 import { AllergyAlertModal } from '../components/AllergyAlertModal'
 import { PatientSelectorCard } from '../components/PatientSelectorCard'
-
-/** Demo catalog standing in for a real drug-stock API. */
-const OBAT_CATALOG: ObatOption[] = [
-  { id: 'obat-paracetamol', nama: 'Paracetamol 500mg', stok: 5 },
-  { id: 'obat-amoxicillin', nama: 'Amoxicillin 500mg', stok: 40 },
-  { id: 'obat-cetirizine', nama: 'Cetirizine 10mg', stok: 15 },
-]
+import { useKunjunganDirectory } from '../hooks/useKunjunganDirectory'
 
 const EMPTY_SOAP_VALUES = {
   sSubjective: '',
@@ -43,9 +38,11 @@ const TABS = [
 ] as const
 
 export function SoapFormPage() {
-  const { hasRole } = useAuth()
+  const { user, hasRole } = useAuth()
   const { notify } = useNotification()
   const { pasienList, addPasien } = usePasienDirectory()
+  const { obatList } = useObatDirectory()
+  const { addKunjungan } = useKunjunganDirectory()
 
   const [activePatient, setActivePatient] = useState<Pasien | null>(null)
   const [registerModalOpen, setRegisterModalOpen] = useState(false)
@@ -53,8 +50,8 @@ export function SoapFormPage() {
   const [pendingAllergy, setPendingAllergy] = useState<{ drugName: string; values: SoapFormValues } | null>(null)
 
   const stockByObatId = useMemo(
-    () => Object.fromEntries(OBAT_CATALOG.map((o) => [o.id, o.stok])),
-    [],
+    () => Object.fromEntries(obatList.map((o) => [o.id, o.stok])),
+    [obatList],
   )
   const soapSchema = useMemo(() => createSoapSchema(stockByObatId), [stockByObatId])
 
@@ -93,8 +90,22 @@ export function SoapFormPage() {
   }
 
   function finalizeSave(values: SoapFormValues) {
-    notify('success', 'Rekam medis SOAP berhasil disimpan')
-    console.info('SOAP submission', activePatient?.id, values)
+    if (!activePatient) return
+
+    addKunjungan({
+      pasienId: activePatient.id,
+      nomorRm: activePatient.nomorRm,
+      namaPasien: activePatient.namaLengkap,
+      dokterId: user?.id ?? 'unknown-user',
+      sSubjective: values.sSubjective,
+      oObjective: values.oObjective,
+      aAssessmentIcd10: values.aAssessmentIcd10,
+      pPlanTindakanIcd9: values.pPlanTindakanIcd9,
+      resepDetail: values.resepDetail,
+    })
+
+    notify('success', 'Rekam medis SOAP berhasil disimpan, resep masuk ke antrean farmasi')
+    setActivePatient(null)
   }
 
   const onSubmit = (values: SoapFormValues) => {
@@ -277,7 +288,7 @@ export function SoapFormPage() {
                             index={index}
                             register={register}
                             errors={errors}
-                            obatOptions={OBAT_CATALOG}
+                            obatOptions={obatList}
                             onSelectObat={(obat) => {
                               setValue(`resepDetail.${index}.obatId`, obat.id, { shouldValidate: true })
                               setValue(`resepDetail.${index}.namaObat`, obat.nama, { shouldValidate: true })

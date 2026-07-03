@@ -2,13 +2,8 @@ import type { UseFormRegister, FieldErrors } from 'react-hook-form'
 import { Trash2 } from 'lucide-react'
 import clsx from 'clsx'
 import { TableRow } from '@/components/Table'
+import type { ObatOption } from '@/features/farmasi/types'
 import type { SoapFormValues } from '../validation/soapSchema'
-
-export interface ObatOption {
-  id: string
-  nama: string
-  stok: number
-}
 
 interface ResepRowProps {
   index: number

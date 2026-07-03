@@ -2,6 +2,7 @@ import type { UseFormRegister, FieldErrors } from 'react-hook-form'
 import { Trash2, AlertTriangle } from 'lucide-react'
 import clsx from 'clsx'
 import { TableRow } from '@/components/Table'
+import type { ObatOption } from '../types'
 import { isNearExpiry } from '../validation/stokSchema'
 import type { StokFormValues } from './stokFormTypes'
 
@@ -9,17 +10,35 @@ interface StockRowProps {
   index: number
   register: UseFormRegister<StokFormValues>
   errors: FieldErrors<StokFormValues>
+  obatOptions: ObatOption[]
   expiredDate: string
   onRemove: () => void
 }
 
-export function StockRow({ index, register, errors, expiredDate, onRemove }: StockRowProps) {
+export function StockRow({ index, register, errors, obatOptions, expiredDate, onRemove }: StockRowProps) {
   const rowErrors = errors.rows?.[index]
   const hasError = !!rowErrors
   const nearExpiry = !hasError && isNearExpiry(expiredDate)
 
   return (
     <TableRow invalid={hasError}>
+      <td>
+        <select
+          {...register(`rows.${index}.obatId`)}
+          className={clsx(
+            'w-full rounded-md border bg-bg-surface px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary/40',
+            rowErrors?.obatId ? 'border-state-danger' : 'border-border',
+          )}
+        >
+          <option value="">Pilih obat...</option>
+          {obatOptions.map((obat) => (
+            <option key={obat.id} value={obat.id}>
+              {obat.nama} (stok saat ini: {obat.stok})
+            </option>
+          ))}
+        </select>
+        {rowErrors?.obatId && <p className="shh-error-text">{rowErrors.obatId.message}</p>}
+      </td>
       <td>
         <input
           {...register(`rows.${index}.batchNumber`)}
